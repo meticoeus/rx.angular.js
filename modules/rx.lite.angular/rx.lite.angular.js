@@ -22,12 +22,12 @@
 
   // Because of build optimizers
   if (typeof define === 'function' && define.amd) {
-    define(['rx-lite', 'angular', 'exports'], function (Rx, angular, exports) {
+    define(['rxjs/Rx', 'angular', 'exports'], function (Rx, angular, exports) {
       root.Rx = factory(root, exports, Rx, angular);
       return root.Rx;
     });
   } else if (typeof module == 'object' && module && module.exports == freeExports) {
-    module.exports = factory(root, module.exports, require('rx-lite'), require('angular'));
+    module.exports = factory(root, module.exports, require('rxjs/Rx'), require('angular'));
   } else {
     root.Rx = factory(root, {}, root.Rx, root.angular);
   }
