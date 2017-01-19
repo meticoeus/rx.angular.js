@@ -42,14 +42,14 @@
                   }
 
                   // Returns function which disconnects the $watch expression
-                  var disposable = new rx.Subscription(scope.$watch(watchExpression, listener, objectEquality));
+                  var subscription = new rx.Subscription(scope.$watch(watchExpression, listener, objectEquality));
 
                   scope.$on('$destroy', function(){
-                      disposable.unsubscribe();
+                      subscription.unsubscribe();
                   });
 
-                  return disposable;
-                }).publish().refCount();
+                  return subscription;
+                }).share();
               },
               /**
                * @ngdoc property
@@ -86,18 +86,18 @@
                 return rx.Observable.create(function (observer) {
                   // Create function to handle old and new Value
                   function listener (newValue, oldValue) {
-                    observer.onNext({ oldValue: oldValue, newValue: newValue });
+                    observer.next({ oldValue: oldValue, newValue: newValue });
                   }
 
                   // Returns function which disconnects the $watch expression
-                  var disposable = new rx.Subscription(scope.$watchCollection(watchExpression, listener));
+                  var subscription = new rx.Subscription(scope.$watchCollection(watchExpression, listener));
 
                   scope.$on('$destroy', function(){
-                    disposable.dispose();
+                    subscription.unsubscribe();
                   });
 
-                  return disposable;
-                }).publish().refCount();
+                  return subscription;
+                }).share();
               },
               /**
                * @ngdoc property
@@ -134,18 +134,18 @@
                 return rx.Observable.create(function (observer) {
                   // Create function to handle old and new Value
                   function listener (newValue, oldValue) {
-                    observer.onNext({ oldValue: oldValue, newValue: newValue });
+                    observer.next({ oldValue: oldValue, newValue: newValue });
                   }
 
                   // Returns function which disconnects the $watch expression
-                  var disposable = new rx.Subscription(scope.$watchGroup(watchExpressions, listener));
+                  var subscription = new rx.Subscription(scope.$watchGroup(watchExpressions, listener));
 
                   scope.$on('$destroy', function(){
-                    disposable.dispose();
+                    subscription.unsubscribe();
                   });
 
-                  return disposable;
-                }).publish().refCount();
+                  return subscription;
+                }).share();
               },
               /**
                * @ngdoc property
@@ -174,7 +174,7 @@
            * Creates an Observable from an event which is fired on the local $scope.
            * Expects an event name as the only input parameter.
            *
-           * @param {string} event name
+           * @param {string} eventName
            *
            * @return {object} Observable object.
            */
@@ -196,12 +196,12 @@
               }
 
               // Returns function which disconnects from the event binding
-              var disposable = new rx.Subscription(scope.$on(eventName, listener));
+              var subscription = new rx.Subscription(scope.$on(eventName, listener));
 
-              scope.$on('$destroy', function(){ disposable.dispose(); });
+              scope.$on('$destroy', function(){ subscription.unsubscribe(); });
 
-              return disposable;
-            }).publish().refCount();
+              return subscription;
+            }).share();
           },
           /**
            * @ngdoc property
@@ -279,7 +279,7 @@
                       value: val
                     };
                   });
-              }).publish().refCount();
+              }).share();
           },
           /**
            * @ngdoc property

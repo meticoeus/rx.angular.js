@@ -27,7 +27,7 @@
 
       function createListener(o) {
         return function listener(newValue, oldValue) {
-          o.onNext({ oldValue: oldValue, newValue: newValue });
+          o.next({ oldValue: oldValue, newValue: newValue });
         };
       }
 
@@ -40,7 +40,7 @@
         this.isDisposed = false;
       }
 
-      InnerDisposable.prototype.dispose = function () {
+      InnerDisposable.prototype.unsubscribe = function () {
         if (!this.isDisposed) {
           this._fn();
           this.isDisposed = true;
@@ -48,7 +48,7 @@
       };
 
       return ObserveOnScope;
-    }(rx.ObservableBase));
+    }(rx.Observable));
 
     return function(scope, watchExpression, objectEquality) {
       return new ObserveOnScope(scope, watchExpression, objectEquality);
